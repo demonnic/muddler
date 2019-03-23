@@ -6,7 +6,7 @@ muddler is a build tool for Mudlet package developers. It aims to provide a deve
   * Provide a standard directory and file structure for 'compiling' files into a Mudlet XML package file
   * Allow the editing of your project and code in the editor of your choice, while still producing Mudlet objects
   * Provide for the description of all standard mudlet objects in json format
-  * In particular allow for describing triggers in a clear Parent<->child manner, with all the options available in the UI in a json or yaml file. This is something I find it particularly onerous to do in pure lua
+  * In particular allow for describing triggers in a clear Parent<->child manner, with all the options available in the UI in a json file. This is something I find it particularly onerous to do in pure Mudlet lua.
 * provide a file which can be distributed across the platforms Mudlet is available for (Windows/OSX/Linux) and act as a build tool similar to maven or gradle. This should allow you to run `muddler build` to compile your project into a .XML file and `muddler clean` to remove all generated files at a minimum.
 * Code will be unit tested using examples exported from multiple versions of Mudlet in order to do our best to ensure maximum compatibility
 
