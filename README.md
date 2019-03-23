@@ -36,8 +36,13 @@ And so on and so forth with Aliases, Timers, Buttons, and Keybindings.
 
 ## Contributing
 ### Prerequisites
-TODO, but probably groovy and java
+* Java JDK 8
+* A Text Editors
+* And a dream!
+  * Ok maybe some groovy and/or java knowledge would help
+
 ### Building
-TODO, but probably gradle, as it's fairly easy to use that to make a self contained jar which can be executed.
+`./gradlew shadowJar` produces an executable jar file with all of the depenendencies. 
+TODO: take that jar and embed it into a script and/or executable for ease of installation/use
 ### Pull Requests
-TODO, but probably just don't be a dick and make sure you include information on how you tested it
+TODO: probably just don't be a dick and make sure you include information on how you tested it
