@@ -42,7 +42,7 @@ And so on and so forth with Aliases, Timers, Buttons, and Keybindings.
   * Ok maybe some groovy and/or java knowledge would help
 
 ### Building
-`./gradlew shadowJar` produces an executable jar file with all of the depenendencies. 
+`./gradlew clean test shadowJar` produces an executable jar file with all of the depenendencies. 
 TODO: take that jar and embed it into a script and/or executable for ease of installation/use
 ### Pull Requests
 TODO: probably just don't be a dick and make sure you include information on how you tested it
