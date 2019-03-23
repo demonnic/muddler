@@ -28,7 +28,7 @@ jar {
 }
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.0-alpha-4'
+    implementation 'org.codehaus.groovy:groovy-all:2.5.6'
 
     // Use the awesome Spock testing and specification framework
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
