@@ -9,4 +9,5 @@ class Alias {
   String script
   String command
   String regex
+  List aliases
 }
