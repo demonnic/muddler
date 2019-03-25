@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Shared",
+        "scripts":[
+            {
+                "name": "Debugging"
+            }
+        ]
+    }
+]

@@ -1,0 +1,25 @@
+[
+    {
+        "name": "Tabbed Chat",
+        "scripts":[
+            {
+                "name": "Code"
+            },
+            {
+                "name": "demonnicOnStart",
+                "eventHandlerList": [
+                    "sysLoadEvent"
+                ]
+            },
+            {
+                "name": "echo functions"
+            },
+            {
+                "name": "demonnicOnInstall",
+                "eventHandlerList":[
+                    "sysInstall"
+                ]
+            }
+        ]
+    }
+]

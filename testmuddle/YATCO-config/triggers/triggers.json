@@ -1,0 +1,12 @@
+[
+    {
+        "name": "City",
+        "regexCodeList": [
+            "(NewYork):"
+        ],
+        "regexCodePropertyList":[
+            "2"
+        ],
+        "conditonLineDelta": "39"
+    }
+]

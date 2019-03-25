@@ -1,0 +1,11 @@
+[
+    {
+        "name": "YATCOCONFIG",
+        "isFolder": "yes",
+        "scripts": [
+            {
+                "name": "Configuration Options"
+            }
+        ]
+    }
+]
