@@ -7,6 +7,6 @@ class Script {
   String isFolder
   String name
   String script
-  String eventHandlerList
+  List eventHandlerList
   List scripts
 }
