@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Reset chasing",
+        "regex": "^chaseres$"
+    },
+    {
+        "name": "Debug",
+        "regex": "^debug(?: (list))?$"
+    },
+    {
+        "name": "debug categories",
+        "regex": "^debugc(?: (.*))?$"
+    }
+]

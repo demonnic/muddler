@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Toggle blinking (temporary change)",
+        "regex": "^dblink$"
+    },
+    {
+        "name": "fixChat",
+        "regex": "^fixchat$"
+    }
+]
