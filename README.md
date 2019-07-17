@@ -36,8 +36,9 @@ C:\USERS\DMONOGUE\GITBOX\MUDDLER\TESTMUDDLE\ANITIMERS
                 animate.lua
                 timers.json
 ```
+Once your project is configured, simply `muddle` in the root directory and it will create a build directory, inside of which will be the .xml and .mpackage files it created.
 
-There's more information in the wiki, be sure to check it out for better documentation.
+There's more information in the wiki (if there isn't, sorry), be sure to check it out for better documentation.
 
 ## Currently working
 * Scripts
