@@ -1,1 +1,0 @@
-demonnic.chaser:reset()

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Prompt",
+    "patterns": [
+      {
+        "pattern": "",
+        "type": "prompt"
+      }
+    ],
+    "children": [
+      {
+        "name": "health",
+        "patterns": [
+          {
+            "pattern": "(\\d+)h",
+            "type": "regex"
+          }
+        ]
+      },
+      {
+        "name": "flags",
+        "filter": "yes",
+        "patterns":[
+          {
+            "pattern": "\\d+h, \\d+m, \\d+e, \\d+w (.*)",
+            "type": "regex"
+          }
+        ],
+        "children": [
+          {
+            "name": "Equilibrium",
+            "highlight": "yes",
+            "highlightFG": "#00aa7f",
+            "highlightBG": "#aa00ff",
+            "patterns":[
+              {
+                "pattern": "e",
+                "type": "substring"
+              }
+            ]
+          },
+          {
+            "name": "Balance",
+            "highlight": "yes",
+            "highlightFG": "#ffff7f",
+            "highlightBG": "#005500",
+            "patterns":[
+              {
+                "pattern": "x",
+                "type": "substring"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

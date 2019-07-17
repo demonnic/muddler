@@ -1,0 +1,2 @@
+pc = {}
+pc.checkedPrompt = true
