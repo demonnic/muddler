@@ -41,7 +41,7 @@ class Trigger extends Item {
     super.readScripts("triggers")
     this.mCommand = options.command ?: ""
     this.triggerType = 0
-    this.isMultiline = super.truthiness(options.multieline)
+    this.isMultiline = super.truthiness(options.multiline)
     this.conditonLineDelta = "0"
     if (this.isMultiline == "yes") {
       this.conditonLineDelta = options.multilineDelta ?: this.conditonLineDelta

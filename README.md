@@ -13,7 +13,7 @@ muddler is a build tool for Mudlet package developers. It aims to provide a deve
 muddler largely relies upon adherence to the muddler convention. For instance, the filetree for animated timers looks like this:
 
 ```
-C:\USERS\DMONOGUE\GITBOX\MUDDLER\TESTMUDDLE\ANITIMERS
+C:\ANITIMERS
 │   mfile
 │
 └───src
