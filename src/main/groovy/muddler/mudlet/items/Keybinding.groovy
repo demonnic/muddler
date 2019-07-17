@@ -1,4 +1,4 @@
-package muddler.mudlet
+package muddler.mudlet.items
 import groovy.transform.ToString
 
 @ToString
