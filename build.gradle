@@ -21,7 +21,7 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
-version = '0.1'
+version = '0.2-SNAPSHOT'
 mainClassName = "muddler.App"
 
 //jar {
