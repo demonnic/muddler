@@ -9,6 +9,7 @@
 plugins {
     // Apply the groovy plugin to add support for Groovy
     id 'groovy'
+    id 'application'
 
     // Shadow jar plugin for creating the uberjar    
     id 'com.github.johnrengelman.shadow' version '5.0.0'
@@ -21,11 +22,13 @@ repositories {
     jcenter()
 }
 version = '0.1'
-jar {
-    manifest {
-        attributes 'Main-Class': 'muddler.App'
-    }
-}
+mainClassName = "muddler.App"
+
+//jar {
+//    manifest {
+//        attributes 'Main-Class': 'muddler.App'
+//    }
+//}
 dependencies {
     // Use the latest Groovy version for building this library
     implementation 'org.codehaus.groovy:groovy-all:2.5.6'
