@@ -10,11 +10,14 @@ plugins {
     // Apply the groovy plugin to add support for Groovy
     id 'groovy'
     id 'application'
+    id 'maven'
 
     // Shadow jar plugin for creating the uberjar    
     id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
+version = '0.2-SNAPSHOT'
+mainClassName = "muddler.App"
 
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -33,7 +36,16 @@ dependencies {
     // Use the latest Groovy version for building this library
     implementation 'org.codehaus.groovy:groovy-all:2.5.6'
 
-    // Use the awesome Spock testing and specification framework
-    testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
+}
+task createPom  {
+    pom {
+        project {
+            groupId 'muddler'
+            artifactId 'muddler'
+            version "$version"
+
+            inceptionYear '2019'
+        }
+    }.writeTo("pom.xml")
 }
 
