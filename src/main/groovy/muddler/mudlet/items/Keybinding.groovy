@@ -25,7 +25,102 @@ class Keybinding extends Item {
   }
 
   
-  def extractKeyAndModifierCodes() {
+  def extractKeyAndModifierCodes(String keyString) {
+    def requiresShift = [
+      '"',
+      ':',
+      '>',
+      '<',
+      '!',
+      '@',
+      '#',
+      '$',
+      '%',
+      '^',
+      '&',
+      '*',
+      '(',
+      ')',
+      '_',
+      '+'
+    ]
+    def hasShift = [
+      '1': '!',
+      '2': '@',
+      '3': '#',
+      '4': '$',
+      '5': '%',
+      '6': '^',
+      '7': '&',
+      '8': '*',
+      '9': '(',
+      '0': ')',
+      '-': '_',
+      '=': '+',
+      ';': ':',
+      ',': '<',
+      '.': '>',
+      '/': '?',
+      '`': '~',
+    ]
+    def keyParts = keyString.split(/\+/)
+    def modifiers = []
+    def key = ""
+    keyParts.each { part -> 
+      part = part.toLowerCase()
+      if (part == "shift" || part == "ctl" || part == "alt" || part == "ctrl") {
+        if (part == "ctl") { part = "ctrl" }
+        modifiers.add(part)
+      } else {
+        key = part
+      }
+    }
+    if (key == "plus") { key =  "+" }
+    if (requiresShift.contains(key)) {
+      modifiers.add("shift")
+    }
+    if (modifiers.contains("shift")) {
+      key = hasShift[key] ?: key
+    }
+    this.keyCode = keyToKeyCode(key)
+    this.keyModifier = generateModifierCode(modifiers)
+  }
+  
+def generateModifierCode(ArrayList modifiers) {
+    def ctrl = modifiers.contains('ctrl')
+    def shift = modifiers.contains('shift')
+    def alt = modifiers.contains('alt')
+    if (shift) {
+      if (ctrl) {
+        if (alt) { 
+          return "234881024" // shift+ctrl+alt
+        } else {
+          return "100663296" // shift+ctrl
+        }
+      } else {
+        if (alt) {
+          return "167772160"
+        } else {
+          return "33554432" // only shift
+        }
+      }
+    } else {
+      if (ctrl) {
+        if (alt) {
+          return "201326592" // ctrl+alt
+        } else {
+          return "67108864" // ctrl
+        }
+      } else {
+        if (alt) {
+          return "134217728" // alt
+        } else {
+          return '0' // none
+        }
+      }
+    } 
+  }
+   def keyToKeyCode(String key) {
     def keyCodes = [
       'backspace': '16777219',
       'return': '16777220',
@@ -95,56 +190,40 @@ class Keybinding extends Item {
       '>': '62',
       '?': '63',
       '@': '64',
-      'A': '65',
-      'B': '66',
-      'C': '67',
-      'D': '68',
-      'E': '69',
-      'F': '70',
-      'G': '71',
-      'H': '72',
-      'I': '73',
-      'J': '74',
-      'K': '75',
-      'L': '76',
-      'M': '77',
-      'N': '78',
-      'O': '79',
-      'P': '80',
-      'Q': '81',
-      'R': '82',
-      'S': '83',
-      'T': '84',
-      'U': '85',
-      'V': '86',
-      'W': '87',
-      'X': '88',
-      'Y': '89',
-      'Z': '90',
+      'a': '65',
+      's': '66',
+      'c': '67',
+      'd': '68',
+      'e': '69',
+      'f': '70',
+      'g': '71',
+      'h': '72',
+      'i': '73',
+      'j': '74',
+      'k': '75',
+      'l': '76',
+      'm': '77',
+      'n': '78',
+      'o': '79',
+      'p': '80',
+      'q': '81',
+      'r': '82',
+      's': '83',
+      't': '84',
+      'u': '85',
+      'v': '86',
+      'w': '87',
+      'x': '88',
+      'y': '89',
+      'z': '90',
       '[': '91',
       '\\': '92',
       ']': '93',
+      '^': '94',
       '_': '95',
       '`': '96',
       '~': '126'
     ]
-    def requiresShift = [
-      '"',
-      ':',
-      '>',
-      '<',
-      '!',
-      '@',
-      '#',
-      '$',
-      '%',
-      '^',
-      '&',
-      '*',
-      '(',
-      ')',
-      '_',
-      '+'
-    ] 
+    return keyCodes[key]
   }
 }
