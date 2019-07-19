@@ -39,7 +39,7 @@ class Alias extends Item {
     if (this.isFolder == "yes") {
       header = 'AliasGroup'
     }
-    xml.'Alias'( isActive : this.isActive, isFolder : this.isFolder ) {
+    xml."$header" ( isActive : this.isActive, isFolder : this.isFolder ) {
       name this.name
       mkp.yieldUnescaped "<script>" + this.script + "</script>"
       command this.command 

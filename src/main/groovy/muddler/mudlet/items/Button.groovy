@@ -1,8 +1,11 @@
 package muddler.mudlet.items
 import groovy.transform.ToString
+import groovy.xml.MarkupBuilder
+import groovy.xml.XmlUtil
+import muddler.mudlet.items.Item
 
 @ToString
-class Button {
+class Button extends Item {
   String isActive
   String ifFolder
   String isPushButton
@@ -26,4 +29,14 @@ class Button {
   String buttonRotation
   String buttonColor
   List buttons
+
+  def Button(Map options) {
+    super(options)
+    super.readScripts("buttons")
+  }
+
+  def newItem(Map options) {
+    return new Button(options)
+  }
+
 }

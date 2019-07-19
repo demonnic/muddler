@@ -28,6 +28,7 @@ class App {
     def scriptP = new ScriptPackage()
     def timerP = new TimerPackage()
     def triggerP = new TriggerPackage()
+    def keyP = new KeyPackage()
     def builder = new StreamingMarkupBuilder()
     builder.encoding = 'UTF-8'
     def mudletPackage = builder.bind {
@@ -38,6 +39,7 @@ class App {
         mkp.yieldUnescaped aliasP.toXML()
         mkp.yieldUnescaped timerP.toXML()
         mkp.yieldUnescaped triggerP.toXML()
+        mkp.yieldUnescaped keyP.toXML()
       }
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
