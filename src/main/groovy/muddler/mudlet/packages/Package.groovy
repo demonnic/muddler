@@ -110,6 +110,7 @@ abstract class Package {
     }
     return mergedList
   }
+  
   def findFiles(fileName) {
     def fileList = []
     this.baseDir.eachFileRecurse FILES, {

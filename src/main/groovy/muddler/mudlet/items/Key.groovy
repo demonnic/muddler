@@ -5,25 +5,56 @@ import groovy.xml.XmlUtil
 import muddler.mudlet.items.Item
 
 @ToString
-class Keybinding extends Item {
+class Key extends Item {
   String isActive
   String isFolder
   String name
+  String path
+  String packageName
   String script
   String command
   String keyCode
   String keyModifier
-  List keys
+  List children
   
-  Keybinding(Map options) {
+  Key(Map options) {
     super(options)
-    super.readScripts("keys")
+    this.script = options.script ?: ''
+    super.readScripts('keys')
+    this.command = options.command ?: ''
+    extractKeyAndModifierCodes(options.keys ?: '')
+    if (this.isFolder == "yes") {
+      this.keyCode = "-1"
+      this.keyModifier = "-1"
+    }
   }
 
   def newItem(Map options) {
-    return new Keybinding(options)
+    return new Key(options)
   }
 
+  def toXML() {
+    def writer = new StringWriter()
+    def xml = new MarkupBuilder(writer)
+    def childString = ""
+    this.children.each {
+      childString = childString + it.toXML()
+    }
+    def header = "Key"
+    if (this.isFolder == "yes") {
+      header = "KeyGroup"
+    }
+    xml."$header" (isActive: this.isActive, isFolder: this.isFolder) {
+      name this.name
+      packageName ''
+      mkp.yieldUnescaped "<script>" + this.script + "</script>"
+      command this.command 
+      keyCode this.keyCode
+      keyModifier this.keyModifier
+      mkp.yieldUnescaped childString
+    }
+    return writer.toString()
+  }
   
   def extractKeyAndModifierCodes(String keyString) {
     def requiresShift = [
@@ -68,19 +99,21 @@ class Keybinding extends Item {
     def key = ""
     keyParts.each { part -> 
       part = part.toLowerCase()
-      if (part == "shift" || part == "ctl" || part == "alt" || part == "ctrl") {
-        if (part == "ctl") { part = "ctrl" }
+      if (part == 'shift' || part == 'ctl' || part == 'alt' || part == 'ctrl' || part == 'keypad' ) {
+        if (part == 'ctl') { part = 'ctrl' }
         modifiers.add(part)
       } else {
         key = part
       }
     }
-    if (key == "plus") { key =  "+" }
-    if (requiresShift.contains(key)) {
-      modifiers.add("shift")
-    }
-    if (modifiers.contains("shift")) {
-      key = hasShift[key] ?: key
+    if (key == 'plus') { key =  '+' }
+    if (! modifiers.contains('keypad') ) { 
+      if (requiresShift.contains(key) && ! modifiers.contains('keypad') ) {
+        modifiers.add('shift')
+      }
+      if (modifiers.contains('shift')) {
+        key = hasShift[key] ?: key
+      }
     }
     this.keyCode = keyToKeyCode(key)
     this.keyModifier = generateModifierCode(modifiers)
@@ -90,32 +123,36 @@ def generateModifierCode(ArrayList modifiers) {
     def ctrl = modifiers.contains('ctrl')
     def shift = modifiers.contains('shift')
     def alt = modifiers.contains('alt')
+    def keypad = modifiers.contains('keypad')
+    // I should rewrite this, but I forgot about keypads when I wrote it the first time
+    // so... for now I just adjusted the returns I already had. Left side is if it's 
+    // on the keypad, right side is if not.
     if (shift) {
       if (ctrl) {
         if (alt) { 
-          return "234881024" // shift+ctrl+alt
+          return keypad ? '771751936' : '234881024' // shift+ctrl+alt
         } else {
-          return "100663296" // shift+ctrl
+          return keypad ? '637534208' : '100663296' // shift+ctrl
         }
       } else {
         if (alt) {
-          return "167772160"
+          return keypad ? '704643072' : '167772160' // shift+alt
         } else {
-          return "33554432" // only shift
+          return keypad ? '570425344' : '33554432' // only shift
         }
       }
     } else {
       if (ctrl) {
         if (alt) {
-          return "201326592" // ctrl+alt
+          return keypad ? '738197504' : '201326592' // ctrl+alt
         } else {
-          return "67108864" // ctrl
+          return keypad ? '603979776' : '67108864' // ctrl
         }
       } else {
         if (alt) {
-          return "134217728" // alt
+          return keypad ? '671088640' : '134217728' // alt
         } else {
-          return '0' // none
+          return keypad ? '536870912' : '0' // none
         }
       }
     } 
@@ -162,8 +199,8 @@ def generateModifierCode(ArrayList modifiers) {
       '"': '34',
       '#': '35',
       '$': '36',
-      "%": '37',
-      "&": '38',
+      '%': '37',
+      '&': '38',
       "'": '39',
       '(': '40',
       ')': '41',
