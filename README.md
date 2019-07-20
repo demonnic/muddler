@@ -45,11 +45,13 @@ There's more information in the wiki (if there isn't, sorry), be sure to check i
 * Triggers
 * Aliases
 * Timers
+* Keybindings
 
 ## To-do
-* Buttons
-* Keybindings
+* Package uploads (with Mudlet package for accessing/searching the uploaded packages)
 * Option to pull mudlet package apart and produce muddler project
+* Variables? (is anyone using this in distribution packages?)
+* Buttons
 * I'm sure plenty of bug fixes
 
 ## Contributing
