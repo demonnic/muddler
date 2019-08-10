@@ -12,6 +12,7 @@ import java.util.regex.Pattern
 
 class App {
   static void main(String[] args) {
+    // read mfile and setup packageName and packageVersion
     def file = new File('./mfile')
     def packageName = ""
     def packageVersion = "1.0"
@@ -24,6 +25,25 @@ class App {
       def fullPath = System.properties['user.dir']
       packageName = fullPath.split(Pattern.quote(File.separator))[-1]
     }
+    // we will leberage Ant for token filtering and zip creation
+    def ant = new AntBuilder()
+    def outputDir = new File('build')
+    // all builds are clean builds. fight me.
+    outputDir.deleteDir()
+    def tmp = new File(outputDir, 'tmp')
+    tmp.mkdirs()
+    // filter our source files from src into build/filtered/src and replace @PKGNAME@ with the package name as used by Mudlet
+    // no more images failing to load because the package name changed or you bumped version
+    ant.copy(todir:'build/filtered/src') {
+      fileset(dir: "src/") {
+        exclude(name: "resources/")
+      }
+      filterset(){
+        filter(token: "PKGNAME", value: "$packageName-$packageVersion")
+      }
+    }
+    
+    // now create the individual item type packages
     def aliasP = new AliasPackage()
     def scriptP = new ScriptPackage()
     def timerP = new TimerPackage()
@@ -43,17 +63,14 @@ class App {
       }
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
-    def outputDir = new File('build')
-    outputDir.deleteDir()
-    def tmp = new File(outputDir, 'tmp')
-    tmp.mkdirs()
+    
     new File(outputDir,packageName + ".xml").withWriter { writer ->
       writer.write(mpXML)
     }
     new File(tmp, 'config.lua').withWriter { writer ->
       writer.write("mpackage = \"$packageName-$packageVersion\"")
     }
-    def ant = new AntBuilder()
+
     def resDir = new File("src${File.separator}resources")
     if (resDir.exists()) {
       ant.copy(toDir: 'build/tmp') {

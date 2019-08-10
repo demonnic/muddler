@@ -13,7 +13,7 @@ abstract class Package {
   abstract def newItem(Map options)
 
   def Package(String packageType ) {
-    this.baseDir = new File("src/$packageType")
+    this.baseDir = new File("build/filtered/src/$packageType")
     this.children = []
     if (baseDir.exists()) {
       this.files = this.findFiles()
@@ -38,7 +38,8 @@ abstract class Package {
     def fullItemsAsArrays = []
     this.files.each {
       def fileArray = "${it}".split(Pattern.quote(File.separator)).toList()
-      def directoriesInPath = fileArray[2..-2]
+      // 4..-2 as we don't want to include build/filtered/src/$type
+      def directoriesInPath = fileArray[4..-2]
       def filePath = directoriesInPath.join(File.separator)
       def itemPayload = []
       def itemArray = []

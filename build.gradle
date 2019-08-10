@@ -16,7 +16,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
-version = '0.2'
+version = '0.3'
 mainClassName = "muddler.App"
 
 repositories {
@@ -24,8 +24,6 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
-version = '0.2-SNAPSHOT'
-mainClassName = "muddler.App"
 
 //jar {
 //    manifest {
