@@ -40,7 +40,11 @@ task dockerImage(type:Exec) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:$version", '.'
 }
 
-task dockerTagLatest(type:Exec) {
+task dockerTest(type:Exec) {
+  commandLine 'docker', 'build', '-t', "demonnic/muddler:test", '.'
+}
+
+task dockerLatest(type:Exec) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
 }
 
