@@ -35,6 +35,15 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.5.6'
 
 }
+
+task dockerImage(type:Exec) {
+  commandLine 'docker', 'build', '-t', "demonnic/muddler:$version", '.'
+}
+
+task dockerTagLatest(type:Exec) {
+  commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
+}
+
 task createPom  {
     pom {
         project {
