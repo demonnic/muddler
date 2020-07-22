@@ -15,7 +15,8 @@ class App {
     // read mfile and setup packageName and packageVersion
     def file = new File('./mfile')
     def packageName = ""
-    def packageVersion = "1.0"
+    def packageVersion = ""
+    def fullPackageName = ""
     if (file.exists()) {
       def config = new JsonSlurper().parse(file)
       packageName = config.package ?: packageName
@@ -25,7 +26,12 @@ class App {
       def fullPath = System.properties['user.dir']
       packageName = fullPath.split(Pattern.quote(File.separator))[-1]
     }
-    // we will leberage Ant for token filtering and zip creation
+    if (packageVersion != "") {
+      fullPackageName = "$packageName-$packageVersion"
+    } else {
+      fullPackageName = packageName
+    }
+    // we will leverage Ant for token filtering and zip creation
     def ant = new AntBuilder()
     def outputDir = new File('build')
     // all builds are clean builds. fight me.
@@ -39,7 +45,7 @@ class App {
         exclude(name: "resources/")
       }
       filterset(){
-        filter(token: "PKGNAME", value: "$packageName-$packageVersion")
+        filter(token: "PKGNAME", value: fullPackageName)
       }
     }
     
@@ -64,11 +70,11 @@ class App {
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
     
-    new File(outputDir,packageName + ".xml").withWriter { writer ->
+    new File(outputDir,fullPackageName + ".xml").withWriter { writer ->
       writer.write(mpXML)
     }
     new File(tmp, 'config.lua').withWriter { writer ->
-      writer.write("mpackage = \"$packageName-$packageVersion\"")
+      writer.write("mpackage = \"$fullPackageName\"")
     }
 
     def resDir = new File("src${File.separator}resources")
@@ -78,9 +84,9 @@ class App {
       }
     }
     ant.copy(toDir: 'build/tmp') {
-      fileset(file: "build/$packageName" + ".xml")
+      fileset(file: "build/$fullPackageName" + ".xml")
     }
-    ant.zip(baseDir: 'build/tmp', destFile: "build/$packageName" + ".mpackage")
+    ant.zip(baseDir: 'build/tmp', destFile: "build/$fullPackageName" + ".mpackage")
     //println XmlUtil.serialize(mudletPackage)
   }
 }
