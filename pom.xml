@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>muddler</groupId>
   <artifactId>muddler</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <inceptionYear>2019</inceptionYear>
   <dependencies>
     <dependency>
