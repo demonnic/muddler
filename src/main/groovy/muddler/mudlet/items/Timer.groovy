@@ -31,7 +31,7 @@ class Timer extends Item {
     this.seconds = options.seconds ?: 0
     this.milliseconds = options.milliseconds ?: 0
     if (this.time == "") {
-      this.time = String.format("%02d:%02d:%02d:%03d",this.hours.toInteger(),this.minutes.toInteger(), this.seconds.toInteger() , this.milliseconds.toInteger())
+      this.time = String.format("%02d:%02d:%02d.%03d",this.hours.toInteger(),this.minutes.toInteger(), this.seconds.toInteger() , this.milliseconds.toInteger())
     }
     this.script = options.script ?: ""
     super.readScripts("timers")
