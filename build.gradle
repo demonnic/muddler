@@ -48,6 +48,13 @@ task dockerLatest(type:Exec) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
 }
 
+task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest']) {
+  shadowDistZip.mustRunAfter clean
+  shadowDistTar.mustRunAfter shadowDistZip
+  dockerImage.mustRunAfter shadowDistTar
+  dockerLatest.mustRunAfter dockerImage
+}
+
 task createPom  {
     pom {
         project {
