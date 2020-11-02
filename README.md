@@ -10,6 +10,8 @@ muddler is a build tool for Mudlet package developers. It aims to provide a deve
 * provide a file which can be distributed across the platforms Mudlet is available for (Windows/OSX/Linux) and act as a build tool similar to maven or gradle. This is being accomplished using the gradle shadow plugin (https://github.com/johnrengelman/shadow) to create a fat jar during testing and distribution archives containing start scripts for multiple platforms.
 
 ## Usage
+First, if you need help come find me on my discord: https://discord.gg/SRRBpbxe34
+It is probably the fastest way to get ahold of me and get a resolution to your issue.
 muddler largely relies upon adherence to the muddler convention. For instance, the filetree for animated timers looks like this:
 
 ```
