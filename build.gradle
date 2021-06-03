@@ -16,7 +16,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
-version = '0.5'
+version = '0.6'
 mainClassName = "muddler.App"
 
 repositories {
@@ -32,19 +32,19 @@ repositories {
 //}
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:2.5.6'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.3'
 
 }
 
-task dockerImage(type:Exec) {
+task dockerImage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:$version", '.'
 }
 
-task dockerTest(type:Exec) {
+task dockerTest(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:test", '.'
 }
 
-task dockerLatest(type:Exec) {
+task dockerLatest(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
 }
 
