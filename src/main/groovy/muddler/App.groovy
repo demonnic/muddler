@@ -8,28 +8,40 @@ import groovy.xml.XmlUtil
 import static groovy.io.FileType.File
 import muddler.mudlet.packages.*
 import java.util.regex.Pattern
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 
 class App {
   static void main(String[] args) {
     // read mfile and setup packageName and packageVersion
-    def file = new File('./mfile')
+    def mfile = new File('./mfile')
+    def readme = new File('./README.md')
     def packageName = ""
     def packageVersion = ""
-    def fullPackageName = ""
-    if (file.exists()) {
-      def config = new JsonSlurper().parse(file)
+    def packageAuthor = ""
+    def packageTitle = ""
+    def packageDesc = ""
+    def packageIcon = ""
+    def now = ZonedDateTime.now()
+    def dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+    def packageTimestamp = dtf.format(now)
+    //def packageTimestamp = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    if (readme.exists()) {
+      packageDesc = readme.text
+    }
+    if (mfile.exists()) {
+      def config = new JsonSlurper().parse(mfile)
       packageName = config.package ?: packageName
       packageVersion = config.version ?: packageVersion
+      packageAuthor = config.author ?: packageAuthor
+      packageTitle = config.title ?: packageTitle
+      packageDesc = config.description ?: packageDesc
+      packageIcon = config.icon ?: packageIcon
     }
     if (packageName == "") {
       def fullPath = System.properties['user.dir']
       packageName = fullPath.split(Pattern.quote(File.separator))[-1]
-    }
-    if (packageVersion != "") {
-      fullPackageName = "$packageName-$packageVersion"
-    } else {
-      fullPackageName = packageName
     }
     // we will leverage Ant for token filtering and zip creation
     def ant = new AntBuilder()
@@ -45,7 +57,8 @@ class App {
         exclude(name: "resources/")
       }
       filterset(){
-        filter(token: "PKGNAME", value: fullPackageName)
+        filter(token: "PKGNAME", value: packageName)
+        filter(token: "VERSION", value: packageVersion)
       }
     }
     
@@ -70,11 +83,34 @@ class App {
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
     
-    new File(outputDir,fullPackageName + ".xml").withWriter { writer ->
+    new File(outputDir,packageName + ".xml").withWriter { writer ->
       writer.write(mpXML)
     }
+
+    def configLua = "mpackage = [[$packageName]]\n"
+        if (! packageAuthor.isEmpty()) {
+      configLua += "author = [[$packageAuthor]]\n"
+    }
+    def validIcon = false
+    if (! packageIcon.isEmpty()) {
+      def iconFile = new File("src${File.separator}resources${File.separator}$packageIcon")
+      if (iconFile.exists()) {
+        configLua += "icon = [[$packageIcon]]\n"
+        validIcon = true
+      }
+    }
+    if (! packageTitle.isEmpty()) {
+      configLua += "title = [[$packageTitle]]\n"
+    }
+    if (! packageDesc.isEmpty()) {
+      configLua += "description = [[$packageDesc]]\n"
+    }
+    if (! packageVersion.isEmpty()) {
+      configLua += "version = [[$packageVersion]]\n"
+    }
+    configLua += "created = [[$packageTimestamp]]\n"
     new File(tmp, 'config.lua').withWriter { writer ->
-      writer.write("mpackage = \"$fullPackageName\"")
+      writer.write(configLua)
     }
 
     def resDir = new File("src${File.separator}resources")
@@ -83,10 +119,15 @@ class App {
         fileset(dir: 'src/resources')
       }
     }
-    ant.copy(toDir: 'build/tmp') {
-      fileset(file: "build/$fullPackageName" + ".xml")
+    if (validIcon) {
+      def iconDir = new File(tmp, '.mudlet/Icon')
+      iconDir.mkdirs()
+      ant.copy(file: "build/tmp/$packageIcon", tofile: "build/tmp/.mudlet/Icon/$packageIcon")
     }
-    ant.zip(baseDir: 'build/tmp', destFile: "build/$fullPackageName" + ".mpackage")
-    //println XmlUtil.serialize(mudletPackage)
+
+    ant.copy(toDir: 'build/tmp') {
+      fileset(file: "build/$packageName" + ".xml")
+    }
+    ant.zip(baseDir: 'build/tmp', destFile: "build/$packageName" + ".mpackage")
   }
 }
