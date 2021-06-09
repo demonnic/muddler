@@ -42,18 +42,19 @@ class App {
         e.error("Problem reading mfile, details follow:", ex)
       }
       packageName = config.package ?: packageName
-      e.echo("Name       : $packageName")
+      e.echo("Name        : $packageName")
       packageVersion = config.version ?: packageVersion
-      e.echo("Version    : $packageVersion")
+      e.echo("Version     : $packageVersion")
       packageAuthor = config.author ?: packageAuthor
-      e.echo("Author     : $packageAuthor")
+      e.echo("Author      : $packageAuthor")
       packageTitle = config.title ?: packageTitle
-      e.echo("Title      : $packageTitle")
+      e.echo("Title       : $packageTitle")
       packageDesc = config.description ?: packageDesc
-      e.echo("Description: $packageDesc")
+      e.echo("Description : $packageDesc")
       packageIcon = config.icon ?: packageIcon
-      e.echo("Icon file  : $packageIcon")
+      e.echo("Icon file   : $packageIcon")
       packageDeps = config.dependencies ?: packageDeps
+      e.echo("Dependencies: $packageDeps")
     }
     if (packageName == "") {
       e.echo("Package name not set via mfile, using directory name")
