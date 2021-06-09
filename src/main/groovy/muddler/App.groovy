@@ -10,11 +10,13 @@ import muddler.mudlet.packages.*
 import java.util.regex.Pattern
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import muddler.Echo
 
 
 class App {
   static void main(String[] args) {
-    // read mfile and setup packageName and packageVersion
+    def e = new Echo()
+    e.echo "Beginning build"
     def mfile = new File('./mfile')
     def readme = new File('./README.md')
     def packageName = ""
@@ -23,35 +25,54 @@ class App {
     def packageTitle = ""
     def packageDesc = ""
     def packageIcon = ""
+    def packageDeps = ""
     def now = ZonedDateTime.now()
     def dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
     def packageTimestamp = dtf.format(now)
-    //def packageTimestamp = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
     if (readme.exists()) {
+      e.echo("Reading README.md file for package description")
       packageDesc = readme.text
     }
     if (mfile.exists()) {
-      def config = new JsonSlurper().parse(mfile)
+      e.echo("Pulling metadata from mfile")
+      def config
+      try {
+        config = new JsonSlurper().parse(mfile)
+      } catch (groovy.json.JsonException ex) {
+        e.error("Problem reading mfile, details follow:", ex)
+      }
       packageName = config.package ?: packageName
+      e.echo("Name       : $packageName")
       packageVersion = config.version ?: packageVersion
+      e.echo("Version    : $packageVersion")
       packageAuthor = config.author ?: packageAuthor
+      e.echo("Author     : $packageAuthor")
       packageTitle = config.title ?: packageTitle
+      e.echo("Title      : $packageTitle")
       packageDesc = config.description ?: packageDesc
+      e.echo("Description: $packageDesc")
       packageIcon = config.icon ?: packageIcon
+      e.echo("Icon file  : $packageIcon")
+      packageDeps = config.dependencies ?: packageDeps
     }
     if (packageName == "") {
+      e.echo("Package name not set via mfile, using directory name")
       def fullPath = System.properties['user.dir']
       packageName = fullPath.split(Pattern.quote(File.separator))[-1]
+      e.echo("Name       : $packageName")
     }
-    // we will leverage Ant for token filtering and zip creation
+
+    e.echo("Spinning up new AntBuilder to do our dirty work but making it silent")
     def ant = new AntBuilder()
+    ant.project.buildListeners[0].messageOutputLevel=1
     def outputDir = new File('build')
-    // all builds are clean builds. fight me.
+    e.echo("Cleaning build directory")
     outputDir.deleteDir()
     def tmp = new File(outputDir, 'tmp')
     tmp.mkdirs()
     // filter our source files from src into build/filtered/src and replace @PKGNAME@ with the package name as used by Mudlet
     // no more images failing to load because the package name changed or you bumped version
+    e.echo("Filtering @PKGNAME@ to '$packageName' and @VERSION@ to '$packageVersion'")
     ant.copy(todir:'build/filtered/src') {
       fileset(dir: "src/") {
         exclude(name: "resources/")
@@ -70,6 +91,7 @@ class App {
     def keyP = new KeyPackage()
     def builder = new StreamingMarkupBuilder()
     builder.encoding = 'UTF-8'
+    e.echo("Converting scanned data to Mudlet package XML now")
     def mudletPackage = builder.bind {
       mkp.xmlDeclaration()
       mkp.yieldUnescaped '<!DOCTYPE MudletPackage>'
@@ -82,11 +104,16 @@ class App {
       }
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
-    
-    new File(outputDir,packageName + ".xml").withWriter { writer ->
-      writer.write(mpXML)
+    e.echo("XML created successfully, writing it to disk")
+    try {
+      new File(outputDir,packageName + ".xml").withWriter { writer ->
+        writer.write(mpXML)
+      }
+    } catch (Exception ex) {
+      e.error("Could not write the XML file because:", ex)
     }
 
+    e.echo("Creating config.lua file contents")
     def configLua = "mpackage = [[$packageName]]\n"
         if (! packageAuthor.isEmpty()) {
       configLua += "author = [[$packageAuthor]]\n"
@@ -108,18 +135,28 @@ class App {
     if (! packageVersion.isEmpty()) {
       configLua += "version = [[$packageVersion]]\n"
     }
+    if (! packageDeps.isEmpty()) {
+      configLua += "dependencies = [[$packageDeps]]\n"
+    }
     configLua += "created = [[$packageTimestamp]]\n"
-    new File(tmp, 'config.lua').withWriter { writer ->
-      writer.write(configLua)
+    e.echo("config.lua contents created, writing to disk")
+    try {
+      new File(tmp, 'config.lua').withWriter { writer ->
+        writer.write(configLua)
+      }
+    } catch (Exception ex) {
+      e.error("Error writing config.lua file:", ex)
     }
 
     def resDir = new File("src${File.separator}resources")
     if (resDir.exists()) {
+      e.echo("Copying files from src/resources to package root")
       ant.copy(toDir: 'build/tmp') {
         fileset(dir: 'src/resources')
       }
     }
     if (validIcon) {
+      e.echo("Copying icon file into place from src/resources/$packageIcon to .mudlet/Icon/$packageIcon")
       def iconDir = new File(tmp, '.mudlet/Icon')
       iconDir.mkdirs()
       ant.copy(file: "build/tmp/$packageIcon", tofile: "build/tmp/.mudlet/Icon/$packageIcon")
@@ -128,6 +165,10 @@ class App {
     ant.copy(toDir: 'build/tmp') {
       fileset(file: "build/$packageName" + ".xml")
     }
-    ant.zip(baseDir: 'build/tmp', destFile: "build/$packageName" + ".mpackage")
+    def mpackageFilename = "build/${packageName}.mpackage"
+    e.echo("Zipping package contents into mpackage file $mpackageFilename")
+    ant.zip(baseDir: 'build/tmp', destFile: mpackageFilename)
+    e.echo("Build completed successfully!")
+    System.exit(0)
   }
 }

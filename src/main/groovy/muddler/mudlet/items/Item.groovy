@@ -1,10 +1,13 @@
 package muddler.mudlet.items
 import groovy.xml.MarkupBuilder
 import groovy.xml.XmlUtil
+import muddler.Echo
 
 abstract class Item {
+  def e
 
   def Item(Map options) {
+    this.e = new Echo()
     this.name = options.name
     if (options.isActive == null) {
       this.isActive = "yes"
@@ -36,6 +39,10 @@ abstract class Item {
       def fullPath = "build/filtered/src${File.separator}$itemType${File.separator}${this.path}${File.separator}${this.name.replaceAll(" ", "_")}.lua"
       def scriptFile = new File(fullPath)
       if (scriptFile.exists()) {
+        def fname = "$scriptFile" - "build/filtered/"
+        def itype = "${itemType[0..-2]}"
+        itype = (itype == "aliase") ? "alias" : itype
+        e.echo("Using script from $fname for $itype '${this.name}'")
         this.script = scriptFile.text.normalize()
       }
     }
