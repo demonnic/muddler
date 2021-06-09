@@ -3,16 +3,20 @@ import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
 import static groovy.io.FileType.*
 import java.util.regex.Pattern
+import muddler.Echo
 
 
 abstract class Package {
   File baseDir
   List files
   List children
+  def e
 
   abstract def newItem(Map options)
 
   def Package(String packageType ) {
+    this.e = new Echo()
+    e.echo("Scanning for $packageType")
     this.baseDir = new File("build/filtered/src/$packageType")
     this.children = []
     if (baseDir.exists()) {
@@ -41,9 +45,15 @@ abstract class Package {
       // 4..-2 as we don't want to include build/filtered/src/$type
       def directoriesInPath = fileArray[4..-2]
       def filePath = directoriesInPath.join(File.separator)
+      def relativePath = fileArray[2..-1].join(File.separator)
       def itemPayload = []
       def itemArray = []
-      def jsonItems = new JsonSlurper().parse(it)
+      def jsonItems
+      try {
+        jsonItems = new JsonSlurper().parse(it)
+      } catch (groovy.json.JsonException ex) {
+        e.error("There was an error reading the json file ./$relativePath:", ex)
+      }
       jsonItems.each {
         it.path = filePath
         itemPayload.add(newItem(it))
@@ -111,11 +121,18 @@ abstract class Package {
     }
     return mergedList
   }
+
+  def fileToRelativePath(file) {
+    return "${file}".split(Pattern.quote(File.separator)).toList()[2..-1].join(File.separator)
+  }
   
   def findFiles(fileName) {
     def fileList = []
     this.baseDir.eachFileRecurse FILES, {
-      if (it.name == fileName) { fileList << it }
+      if (it.name == fileName) { 
+        e.echo("Found ./${fileToRelativePath(it)}")
+        fileList << it 
+      }
     }
     return fileList
   }

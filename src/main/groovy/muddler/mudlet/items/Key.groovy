@@ -107,6 +107,9 @@ class Key extends Item {
       }
     }
     if (key == 'plus') { key =  '+' }
+    if (key == 'minus') { key = '-' }
+    if (key == 'slash') { key = "/" }
+    if (key == "asterisk") { key = "*" }
     if (! modifiers.contains('keypad') ) { 
       if (requiresShift.contains(key) && ! modifiers.contains('keypad') ) {
         modifiers.add('shift')
