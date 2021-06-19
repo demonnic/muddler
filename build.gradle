@@ -20,20 +20,11 @@ version = '0.8'
 mainClassName = "muddler.App"
 
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
 
-//jar {
-//    manifest {
-//        attributes 'Main-Class': 'muddler.App'
-//    }
-//}
 dependencies {
-    // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.3'
-
+  implementation 'org.codehaus.groovy:groovy-all:3.0.3'
 }
 
 task dockerImage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
