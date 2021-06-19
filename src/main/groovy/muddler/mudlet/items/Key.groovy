@@ -24,8 +24,8 @@ class Key extends Item {
     this.command = options.command ?: ''
     extractKeyAndModifierCodes(options.keys ?: '')
     if (this.isFolder == "yes") {
-      this.keyCode = "-1"
-      this.keyModifier = "-1"
+      this.keyCode = this.keyCode ?: "33554431" // copied from a freshly made key group in mudlet 4.12
+      this.keyModifier = this.keyModifier ?: "0" // ^this
     }
   }
 
