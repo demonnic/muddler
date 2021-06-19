@@ -26,6 +26,7 @@ class App {
     def packageDesc = ""
     def packageIcon = ""
     def packageDeps = ""
+    def outputFile = false
     def now = ZonedDateTime.now()
     def dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
     def packageTimestamp = dtf.format(now)
@@ -55,12 +56,17 @@ class App {
       e.echo("Icon file   : $packageIcon")
       packageDeps = config.dependencies ?: packageDeps
       e.echo("Dependencies: $packageDeps")
+      outputFile = config.outputFile ?: outputFile
     }
     if (packageName == "") {
       e.echo("Package name not set via mfile, using directory name")
       def fullPath = System.properties['user.dir']
       packageName = fullPath.split(Pattern.quote(File.separator))[-1]
       e.echo("Name       : $packageName")
+    }
+
+    if (outputFile) {
+      e.echo("Will write .output file at root of project with json object containing package name and file location at build end")
     }
 
     e.echo("Spinning up new AntBuilder to do our dirty work but making it silent")
@@ -157,7 +163,7 @@ class App {
       }
     }
     if (validIcon) {
-      e.echo("Copying icon file into place from src/resources/$packageIcon to .mudlet/Icon/$packageIcon")
+      e.echo("Copying icon file into place from src${File.separator}resources${File.separator}$packageIcon to .mudlet${File.separator}Icon${File.separator}$packageIcon")
       def iconDir = new File(tmp, '.mudlet/Icon')
       iconDir.mkdirs()
       ant.copy(file: "build/tmp/$packageIcon", tofile: "build/tmp/.mudlet/Icon/$packageIcon")
@@ -166,9 +172,17 @@ class App {
     ant.copy(toDir: 'build/tmp') {
       fileset(file: "build/$packageName" + ".xml")
     }
-    def mpackageFilename = "build/${packageName}.mpackage"
+    def mpackageFilename = "build${File.separator}${packageName}.mpackage"
     e.echo("Zipping package contents into mpackage file $mpackageFilename")
     ant.zip(baseDir: 'build/tmp', destFile: mpackageFilename)
+    if (outputFile) {
+      def cwd = System.properties['user.dir']
+      def outFile = new File('./.output')
+      def line = "{ \"name\": \"$packageName\", \"path\": \"${cwd + File.separator + mpackageFilename}\" }\n"
+      outFile.newWriter().withWriter { w ->
+        w << line
+      }
+    }
     e.echo("Build completed successfully!")
     System.exit(0)
   }
