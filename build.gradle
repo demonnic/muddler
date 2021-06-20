@@ -7,33 +7,23 @@
  */
 
 plugins {
-    // Apply the groovy plugin to add support for Groovy
-    id 'groovy'
-    id 'application'
-    id 'maven'
+  id 'groovy'
+  id 'application'
+  id 'maven'
 
-    // Shadow jar plugin for creating the uberjar    
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+  // Shadow jar plugin for creating the uberjar    
+  id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
-version = '0.7'
+version = '0.8'
 mainClassName = "muddler.App"
 
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
 
-//jar {
-//    manifest {
-//        attributes 'Main-Class': 'muddler.App'
-//    }
-//}
 dependencies {
-    // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.3'
-
+  implementation 'org.codehaus.groovy:groovy-all:3.0.3'
 }
 
 task dockerImage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
@@ -48,22 +38,21 @@ task dockerLatest(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
 }
 
-task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest']) {
-  shadowDistZip.mustRunAfter clean
-  shadowDistTar.mustRunAfter shadowDistZip
-  dockerImage.mustRunAfter shadowDistTar
-  dockerLatest.mustRunAfter dockerImage
+task mpackage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
+  def jar = "../build/libs/muddle-$version-all.jar"
+  workingDir = "./mpackage"
+  commandLine 'java', '-jar', jar
 }
+
+task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest', 'dockerTest', 'mpackage'])
 
 task createPom  {
-    pom {
-        project {
-            groupId 'muddler'
-            artifactId 'muddler'
-            version "$version"
-
-            inceptionYear '2019'
-        }
-    }.writeTo("pom.xml")
+  pom {
+    project {
+      groupId 'muddler'
+      artifactId 'muddler'
+      version "$version"
+      inceptionYear '2019'
+    }
+  }.writeTo("pom.xml")
 }
-
