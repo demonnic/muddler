@@ -7,13 +7,12 @@
  */
 
 plugins {
-    // Apply the groovy plugin to add support for Groovy
-    id 'groovy'
-    id 'application'
-    id 'maven'
+  id 'groovy'
+  id 'application'
+  id 'maven'
 
-    // Shadow jar plugin for creating the uberjar    
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+  // Shadow jar plugin for creating the uberjar    
+  id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
 version = '0.8'
@@ -39,7 +38,13 @@ task dockerLatest(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:latest", '.'
 }
 
-task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest']) {
+task mpackage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
+  def jar = "../build/libs/muddle-$version-all.jar"
+  workingDir = "./mpackage"
+  commandLine 'java', '-jar', jar
+}
+
+task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest', 'mpackage']) {
   shadowDistZip.mustRunAfter clean
   shadowDistTar.mustRunAfter shadowDistZip
   dockerImage.mustRunAfter shadowDistTar
@@ -47,13 +52,12 @@ task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage'
 }
 
 task createPom  {
-    pom {
-        project {
-            groupId 'muddler'
-            artifactId 'muddler'
-            version "$version"
-
-            inceptionYear '2019'
-        }
-    }.writeTo("pom.xml")
+  pom {
+    project {
+      groupId 'muddler'
+      artifactId 'muddler'
+      version "$version"
+      inceptionYear '2019'
+    }
+  }.writeTo("pom.xml")
 }
