@@ -44,12 +44,7 @@ task mpackage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'java', '-jar', jar
 }
 
-task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest', 'dockerTest', 'mpackage']) {
-  shadowDistZip.mustRunAfter clean
-  shadowDistTar.mustRunAfter shadowDistZip
-  dockerImage.mustRunAfter shadowDistTar
-  dockerLatest.mustRunAfter dockerImage
-}
+task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest', 'dockerTest', 'mpackage'])
 
 task createPom  {
   pom {
