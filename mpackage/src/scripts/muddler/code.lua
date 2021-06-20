@@ -20,6 +20,7 @@ end
 
 function Muddler:start()
   self:stop()
+  self.watch = true
   self.eventHandler = registerAnonymousEventHandler("sysPathChanged", function(_, path)
     if path == self.path then
       self:reload()
@@ -36,6 +37,7 @@ local function jsonload(file)
 end
 
 function Muddler:stop()
+  self.watch = false
   if self.eventHandler then
     killAnonymousEventHandler(self.eventHandler)
     self.eventHandler = nil
