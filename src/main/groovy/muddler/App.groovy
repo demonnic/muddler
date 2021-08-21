@@ -178,7 +178,7 @@ class App {
     if (outputFile) {
       def cwd = System.properties['user.dir']
       def outFile = new File('./.output')
-      def line = "{ \"name\": \"$packageName\", \"path\": \"${cwd + File.separator + mpackageFilename}\" }\n"
+      def line = "{ \"name\": \"$packageName\", \"path\": \"build${File.separator + mpackageFilename}\" }\n"
       outFile.newWriter().withWriter { w ->
         w << line
       }
