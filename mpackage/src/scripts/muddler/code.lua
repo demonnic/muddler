@@ -13,7 +13,6 @@ function Muddler:new(options)
   setmetatable(me, self)
   self.__index = self
   me.path = me.path:gsub("\\", "/")
-  me.path = me.path .. "/.output"
   if me.watch then me:start() end
   return me
 end
@@ -22,11 +21,11 @@ function Muddler:start()
   self:stop()
   self.watch = true
   self.eventHandler = registerAnonymousEventHandler("sysPathChanged", function(_, path)
-    if path == self.path then
+    if path == self.path .. "/.output" then
       self:reload()
     end
   end)
-  addFileWatch(self.path)
+  addFileWatch(self.path .. "/.output")
 end
 
 local function jsonload(file)
@@ -42,7 +41,7 @@ function Muddler:stop()
     killAnonymousEventHandler(self.eventHandler)
     self.eventHandler = nil
   end
-  removeFileWatch(self.path)
+  removeFileWatch(self.path .. "/.output")
 end
 
 local function execute(item)
@@ -73,7 +72,7 @@ local function execute(item)
 end
 
 function Muddler:reload()
-  local ok, pkgInfo = pcall(jsonload, self.path)
+  local ok, pkgInfo = pcall(jsonload, self.path .. "/.output")
   if not ok then
     debugc("Error loading output file, err: " .. pkgInfo)
     return
@@ -82,7 +81,7 @@ function Muddler:reload()
     return
   end
   local name = pkgInfo.name
-  local path = pkgInfo.path
+  local path = self.path .. pkgInfo.path
   local prer, postr, prei, posti = self.preremove, self.postremove, self.preinstall, self.postinstall
   debugc("preremove " .. name)
   if prer then
