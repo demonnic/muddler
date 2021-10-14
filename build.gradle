@@ -15,16 +15,26 @@ plugins {
   id 'com.github.johnrengelman.shadow' version '5.0.0'
 
 }
-version = '0.9'
+//version = '0.10'
 mainClassName = "muddler.App"
 
 repositories {
-    jcenter()
+  jcenter()
 }
 
 dependencies {
   implementation 'org.codehaus.groovy:groovy-all:3.0.3'
 }
+
+task generateGroovy(type: Copy) {
+  def templateContext = [version: project.version]
+  inputs.properties templateContext // for gradle up-to-date check
+  from "src/template/groovy/"
+  into "$buildDir/generated/groovy"
+  expand templateContext
+}
+sourceSets.main.groovy.srcDir "$buildDir/generated/groovy" // add the extra source dir 
+compileGroovy.dependsOn generateGroovy // wire the generateJava task into the DAG
 
 task dockerImage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:$version", '.'
@@ -51,7 +61,7 @@ task createPom  {
     project {
       groupId 'muddler'
       artifactId 'muddler'
-      version "$version"
+      version project.version
       inceptionYear '2019'
     }
   }.writeTo("pom.xml")
