@@ -26,6 +26,7 @@ dependencies {
   implementation 'org.codehaus.groovy:groovy-all:3.0.3'
 }
 
+// this feels like a lot to not repeat the version, but by Jove I'm doing it anyway!
 task generateGroovy(type: Copy) {
   def templateContext = [version: project.version]
   inputs.properties templateContext // for gradle up-to-date check
@@ -33,8 +34,9 @@ task generateGroovy(type: Copy) {
   into "$buildDir/generated/groovy"
   expand templateContext
 }
-sourceSets.main.groovy.srcDir "$buildDir/generated/groovy" // add the extra source dir 
-compileGroovy.dependsOn generateGroovy // wire the generateJava task into the DAG
+// add the generated files to the srcDir and ensure they're generated before compileGroovy
+sourceSets.main.groovy.srcDir "$buildDir/generated/groovy"
+compileGroovy.dependsOn generateGroovy
 
 task dockerImage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
   commandLine 'docker', 'build', '-t', "demonnic/muddler:$version", '.'
