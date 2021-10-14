@@ -5,18 +5,39 @@ package muddler
 import groovy.json.JsonSlurper
 import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
+import groovy.cli.picocli.CliBuilder
 import static groovy.io.FileType.File
 import muddler.mudlet.packages.*
 import java.util.regex.Pattern
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import muddler.Echo
-
+import muddler.Version
 
 class App {
   static void main(String[] args) {
     def e = new Echo()
-    e.echo "Beginning build"
+    def cli = new CliBuilder(usage: 'muddler [-v|--version] [-h|--help]')
+    cli.with {
+      h longOpt: 'help', 'Show usage information'
+      v longOpt: 'version', 'Print version information and exit'
+    }
+    def options = cli.parse(args)
+    if (!options) {
+      return
+    }
+    // print usage information and exit
+    if (options.h) {
+      cli.usage()
+      return
+    }
+
+    // print version and exit
+    if (options.v) {
+      println "muddler version: " + Version.version
+      return
+    }
+    e.echo "Beginning build. Using muddler version ${Version.version}"
     def mfile = new File('./mfile')
     def readme = new File('./README.md')
     def packageName = ""
