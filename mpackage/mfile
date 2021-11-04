@@ -1,6 +1,6 @@
 {
   "package": "Muddler",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Demonnic",
   "description": "A helper package for reloading packages created by muddler automatically",
   "title": "muddler helper package"
