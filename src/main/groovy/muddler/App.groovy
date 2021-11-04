@@ -193,7 +193,7 @@ class App {
     ant.copy(toDir: 'build/tmp') {
       fileset(file: "build/$packageName" + ".xml")
     }
-    def mpackageFilename = "build${File.separator}${packageName}.mpackage"
+    def mpackageFilename = "build/${packageName}.mpackage"
     e.echo("Zipping package contents into mpackage file $mpackageFilename")
     ant.zip(baseDir: 'build/tmp', destFile: mpackageFilename)
     if (outputFile) {

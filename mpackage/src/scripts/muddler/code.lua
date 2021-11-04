@@ -82,6 +82,7 @@ function Muddler:reload()
   end
   local name = pkgInfo.name
   local path = self.path .. pkgInfo.path
+  path = path:gsub([[\]], "/")
   local prer, postr, prei, posti = self.preremove, self.postremove, self.preinstall, self.postinstall
   debugc("preremove " .. name)
   if prer then
