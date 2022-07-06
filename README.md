@@ -1,6 +1,14 @@
-# muddler
+# What is muddler?
 
 muddler is a build tool for Mudlet package developers. It aims to provide a development environment that will feel familiar for many developers and also be intuitive enough to pick up for those who have primarily done scripting for Mudlet.
+
+## Ok, but what does that even mean?
+
+It means you can edit your Mudlet scripts in the IDE or text editor of your choice with all your usual tools and shortcuts but still produce a 'standard' Mudlet package, as though you'd written and exported it from Mudlet itself.
+
+Other solutions for editing Mudlet scripts inside your own editor have tended to involve either creating and managing a ton of tempTrigger/Aliases/etc instead of creating them as permanent items in the Mudlet editor, or watching/reading a lua files contents into a script/trigger/alias/etc in the Mudlet editor. Muddler attempts to be indistinguishable from items created in the Mudlet script editor once imported into Mudlet, while still providing access to all the usual options available for your triggers and the like inside Mudlet itself. All while giving you the full capabilities of your favorite code editor.
+
+This also produces cleaner diffs for managing a project in git, whether for collaboration or just source code/version management.
 
 ## Goals and/or features
 
