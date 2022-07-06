@@ -12,12 +12,14 @@ This also produces cleaner diffs for managing a project in git, whether for coll
 
 ## Goals and/or features
 
+More complete documentation is available on the [wiki](https://github.com/demonnic/muddler/wiki), but a rundown of the basics follows:
+
 * Convention over configuration
   * Provide a standard directory and file structure for 'compiling' files into a Mudlet package
   * Allow the editing of your project and code in the editor of your choice, while still producing Mudlet objects
 * Provide for the description of all standard mudlet objects in json format
 * In particular allow for describing triggers in a clear Parent<->child manner, with all the options available in the UI in a json file. This is something I find it particularly onerous to do in pure Mudlet lua.
-* provide a file which can be distributed across the platforms Mudlet is available for (Windows/OSX/Linux) and act as a build tool similar to maven or gradle. This is being accomplished using the gradle shadow plugin (<https://github.com/johnrengelman/shadow>) to create a fat jar during testing and distribution archives containing start scripts for multiple platforms.
+* provide a file which can be distributed across the platforms Mudlet is available for (Windows/OSX/Linux) and act as a build tool similar to maven or gradle. This is being accomplished using the [gradle shadow plugin](https://github.com/johnrengelman/shadow) to create a fat jar during testing and distribution archives containing start scripts for multiple platforms.
 
 ## Usage
 
@@ -51,8 +53,6 @@ C:\ANITIMERS
 ```
 
 Once your project is configured, simply `muddle` in the root directory and it will create a build directory, inside of which will be the .xml and .mpackage files it created.
-
-There's more information in the wiki (if there isn't, sorry), be sure to check it out for better documentation.
 
 ## Currently working
 
