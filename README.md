@@ -79,6 +79,8 @@ Once your project is configured, simply `muddle` in the root directory and it wi
 * And a dream!
   * Ok maybe some groovy and/or java knowledge would help
 
+I build using JDK8, but I have tested using jdk 8, 11, 17, and 18.
+
 ### Building
 
 `./gradlew clean shadowJar` produces an executable jar file with all of the depenendencies. This can be run using `java -jar </path/to/jarfile`
