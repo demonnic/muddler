@@ -100,7 +100,7 @@ abstract class Package {
       }
       mergeInto.add objectToMergeInto
       mergedList.removeAll([null])
-      if (mergedList.size == 0 ) {
+      if (mergedList.size() == 0 ) {
         return mergeInto
       } else {
         return mergeDown(mergedList, mergeInto)            
@@ -111,7 +111,7 @@ abstract class Package {
   def fullMerge(ArrayList toMerge) {
     def mergedList = mergeDown(toMerge)
     mergedList.collect {
-      if (it.children.size > 1) {
+      if (it.children.size() > 1) {
         def newItems = fullMerge(it.children)
         it.children = newItems
         return it

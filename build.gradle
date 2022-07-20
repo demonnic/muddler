@@ -9,10 +9,9 @@
 plugins {
   id 'groovy'
   id 'application'
-  id 'maven'
 
   // Shadow jar plugin for creating the uberjar    
-  id 'com.github.johnrengelman.shadow' version '5.0.0'
+  id 'com.github.johnrengelman.shadow' version '7.0.0'
 
 }
 
@@ -23,7 +22,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+  implementation 'org.apache.groovy:groovy-all:4.0.3'
 }
 
 // this feels like a lot to not repeat the version, but by Jove I'm doing it anyway!
@@ -57,14 +56,3 @@ task mpackage(type:Exec, dependsOn: ['clean', 'shadowJar']) {
 }
 
 task muddle(dependsOn: ['clean', 'shadowDistZip', 'shadowDistTar', 'dockerImage', 'dockerLatest', 'dockerTest', 'mpackage'])
-
-task createPom  {
-  pom {
-    project {
-      groupId 'muddler'
-      artifactId 'muddler'
-      version project.version
-      inceptionYear '2019'
-    }
-  }.writeTo("pom.xml")
-}
