@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'org.codehaus.groovy:groovy-all:3.0.3'
+  implementation 'org.codehaus.groovy:groovy-all:3.0.8'
 }
 
 // this feels like a lot to not repeat the version, but by Jove I'm doing it anyway!

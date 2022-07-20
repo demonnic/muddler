@@ -34,7 +34,13 @@ class App {
 
     // print version and exit
     if (options.v) {
-      println "muddler version: " + Version.version
+      println "muddler version: ${Version.version}"
+      return
+    }
+
+    def srcDir = new File('./src')
+    if (!srcDir.exists()) {
+      println "muddler requires a src directory to read your package contents from, and cannot find it. Please see https://github.com/demonnic/muddler#usage for more information on the file layout for muddler."
       return
     }
     e.echo "Beginning build. Using muddler version ${Version.version}"
@@ -136,6 +142,7 @@ class App {
     try {
       new File(outputDir,packageName + ".xml").withWriter { writer ->
         writer.write(mpXML)
+        writer.flush()
       }
     } catch (Exception ex) {
       e.error("Could not write the XML file because:", ex)
