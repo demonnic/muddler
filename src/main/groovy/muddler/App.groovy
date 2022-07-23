@@ -151,7 +151,7 @@ class App {
 
     e.echo("Creating config.lua file contents")
     def configLua = "mpackage = [[$packageName]]\n"
-        if (! packageAuthor.isEmpty()) {
+    if (! packageAuthor.isEmpty()) {
       configLua += "author = [[$packageAuthor]]\n"
     }
     def validIcon = false
@@ -179,6 +179,7 @@ class App {
     try {
       new File(tmp, 'config.lua').withWriter { writer ->
         writer.write(configLua)
+        writer.flush()
       }
     } catch (Exception ex) {
       e.error("Error writing config.lua file:", ex)
