@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter
 import groovy.ant.AntBuilder
 import muddler.Echo
 import muddler.Version
+import muddler.Generator
 
 class App {
   static void main(String[] args) {
@@ -22,6 +23,8 @@ class App {
     cli.with {
       h longOpt: 'help', 'Show usage information'
       v longOpt: 'version', 'Print version information and exit'
+      g longOpt: 'generate', 'Create a new muddler project by answering some questions.'
+      d longOpt: 'default', 'Create a new default muddler template project named MyProject in the MyProject directory'
     }
     def options = cli.parse(args)
     if (!options) {
@@ -36,6 +39,18 @@ class App {
     // print version and exit
     if (options.v) {
       println "muddler version: ${Version.version}"
+      return
+    }
+
+    if (options.g) {
+      println "Creating new muddler project!"
+      new Generator().create(false)
+      return
+    }
+
+    if (options.d) {
+      e.echo "Creating a new muddler project with all src dirs and default options."
+      new Generator().create(true)
       return
     }
 
