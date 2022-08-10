@@ -25,6 +25,8 @@ More complete documentation is available on the [wiki](https://github.com/demonn
 
 First, if you need help come find me on my discord: <https://discord.gg/SRRBpbxe34>
 It is probably the fastest way to get ahold of me and get a resolution to your issue.
+Second, starting with muddler 0.13 you can now use the `--generate` switch to interactively create a file tree, or `--default` to create a full, default file tree to start with. You should still familiarize yourself with the following information though.
+
 muddler largely relies upon adherence to the muddler convention. For instance, the filetree for animated timers looks like this:
 
 ```txt
