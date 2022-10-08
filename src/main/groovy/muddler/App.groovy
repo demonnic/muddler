@@ -127,6 +127,10 @@ class App {
       fileset(dir: "src/") {
         exclude(name: "resources/")
       }
+      filterset(begintoken: "__", endtoken: "__") {
+        filter(token: "PKGNAME", value: packageName)
+        filter(token: "VERSION", value: packageVersion)
+      }
       filterset(){
         filter(token: "PKGNAME", value: packageName)
         filter(token: "VERSION", value: packageVersion)
