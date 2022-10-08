@@ -45,8 +45,8 @@ abstract class Package {
     this.files.each {
       // We don't want to include build/filtered/src/ in the path, so remove
       // the basePath prefix from each filename
-      def quotedBasePath = Pattern.quote(this.basePath)
-      def relativeToBase = "${it}".replaceFirst("^${quotedBasePath}/", "")
+      def quotedBasePath = Pattern.quote("${this.basePath}${File.separator}")
+      def relativeToBase = "${it}".replaceFirst("^${quotedBasePath}" , "")
       def relativePath = relativeToBase.split(Pattern.quote(File.separator)).toList()
 
       def directoriesInPath = relativePath[0..<-1]
