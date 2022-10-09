@@ -35,7 +35,7 @@ abstract class Item {
   }  
 
   def readScripts(String itemType) {
-    if (this.script == "" && this.isFolder != "yes" ) {
+    if (this.script == "") {
       def fullPath = "build/filtered/src${File.separator}$itemType${File.separator}${this.path}${File.separator}${this.name.replaceAll(" ", "_")}.lua"
       def scriptFile = new File(fullPath)
       if (scriptFile.exists()) {
