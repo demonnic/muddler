@@ -73,6 +73,7 @@ abstract class Package {
           def properties = [:]
           properties.isFolder = "yes"
           properties.name = it
+          properties.path = filePath
           itemArray.add(newItem(properties))
         }
 
@@ -116,7 +117,7 @@ abstract class Package {
       if (mergedList.size() == 0 ) {
         return mergeInto
       } else {
-        return mergeDown(mergedList, mergeInto)            
+        return mergeDown(mergedList, mergeInto)
       }
     }
   }
