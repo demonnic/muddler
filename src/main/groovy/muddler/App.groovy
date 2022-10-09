@@ -122,7 +122,7 @@ class App {
     tmp.mkdirs()
     // filter our source files from src into build/filtered/src and replace @PKGNAME@ with the package name as used by Mudlet
     // no more images failing to load because the package name changed or you bumped version
-    e.echo("Filtering @PKGNAME@ to '$packageName' and @VERSION@ to '$packageVersion'")
+    e.echo("Filtering @PKGNAME@ and __PKGNAME__ to '$packageName' and @VERSION@ and __VERSION__ to '$packageVersion'")
     ant.copy(todir:'build/filtered/src') {
       fileset(dir: "src/") {
         exclude(name: "resources/")
