@@ -7,6 +7,7 @@ import muddler.Echo
 
 
 abstract class Package {
+  String basePath
   File baseDir
   List files
   List children
@@ -17,7 +18,8 @@ abstract class Package {
   def Package(String packageType ) {
     this.e = new Echo()
     e.echo("Scanning for $packageType")
-    this.baseDir = new File("build/filtered/src/$packageType")
+    this.basePath = "build/filtered/src/$packageType"
+    this.baseDir = new File(this.basePath)
     this.children = []
     if (baseDir.exists()) {
       this.files = this.findFiles()
@@ -41,31 +43,42 @@ abstract class Package {
   def createItems() {
     def fullItemsAsArrays = []
     this.files.each {
-      def fileArray = "${it}".split(Pattern.quote(File.separator)).toList()
-      // 4..-2 as we don't want to include build/filtered/src/$type
-      def directoriesInPath = fileArray[4..-2]
-      def filePath = directoriesInPath.join(File.separator)
-      def relativePath = fileArray[2..-1].join(File.separator)
+      // We don't want to include build/filtered/src/ in the path, so remove
+      // the basePath prefix from each filename
+      def quotedBasePath = Pattern.quote("${this.basePath}${File.separator}")
+      def relativeToBase = "${it}".replaceFirst("^${quotedBasePath}" , "")
+      def relativePath = relativeToBase.split(Pattern.quote(File.separator)).toList()
+
+      def directoriesInPath = relativePath[0..<-1]
+      def filePath =  directoriesInPath.join(File.separator)
+      def fileName = relativePath.join(File.separator)
+
       def itemPayload = []
       def itemArray = []
       def jsonItems
       try {
         jsonItems = new JsonSlurper().parse(it)
       } catch (groovy.json.JsonException ex) {
-        e.error("There was an error reading the json file ./$relativePath:", ex)
+        e.error("There was an error reading the json file ./$fileName:", ex)
       }
       jsonItems.each {
         it.path = filePath
         itemPayload.add(newItem(it))
       }
-      directoriesInPath.each {
-        def properties = [:]
-        properties.isFolder = "yes"
-        properties.name = it
-        itemArray.add(newItem(properties))
+
+      if (directoriesInPath.isEmpty()) {
+        this.children.addAll(itemPayload)
+      } else {
+        directoriesInPath.each {
+          def properties = [:]
+          properties.isFolder = "yes"
+          properties.name = it
+          itemArray.add(newItem(properties))
+        }
+
+        itemArray.add(itemPayload)
+        fullItemsAsArrays.add(itemArray)
       }
-      itemArray.add(itemPayload)
-      fullItemsAsArrays.add(itemArray)
     }
     fullItemsAsArrays.each {
       def testData = it
