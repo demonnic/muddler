@@ -160,7 +160,7 @@ class App {
     def mpXML = XmlUtil.serialize(mudletPackage)
     e.echo("XML created successfully, writing it to disk")
     try {
-      new File(outputDir,packageName + ".xml").withWriter { writer ->
+      new File(outputDir, packageName + ".xml").withWriter('UTF-8') { writer ->
         writer.write(mpXML)
         writer.flush()
       }

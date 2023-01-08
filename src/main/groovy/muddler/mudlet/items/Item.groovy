@@ -36,10 +36,11 @@ abstract class Item {
 
   def readScripts(String itemType) {
     if (this.script == "") {
-      def fullPath = "build/filtered/src${File.separator}$itemType${File.separator}${this.path}${File.separator}${this.name.replaceAll(" ", "_")}.lua"
+      def path = this.path
+      def fullPath = "build${File.separator}filtered${File.separator}src${File.separator}$itemType${File.separator}$path${File.separator}${this.name.replaceAll(" ", "_")}.lua"
       def scriptFile = new File(fullPath)
       if (scriptFile.exists()) {
-        def fname = "$scriptFile" - "build/filtered/"
+        def fname = "$scriptFile" - "build${File.separator}filtered${File.separator}"
         def itype = "${itemType[0..-2]}"
         itype = (itype == "aliase") ? "alias" : itype
         e.echo("Using script from $fname for $itype '${this.name}'")

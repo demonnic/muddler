@@ -18,7 +18,7 @@ abstract class Package {
   def Package(String packageType ) {
     this.e = new Echo()
     e.echo("Scanning for $packageType")
-    this.basePath = "build/filtered/src/$packageType"
+    this.basePath = "build${File.separator}filtered${File.separator}src${File.separator}$packageType${File.separator}"
     this.baseDir = new File(this.basePath)
     this.children = []
     if (baseDir.exists()) {
@@ -45,7 +45,7 @@ abstract class Package {
     this.files.each {
       // We don't want to include build/filtered/src/ in the path, so remove
       // the basePath prefix from each filename
-      def quotedBasePath = Pattern.quote("${this.basePath}${File.separator}")
+      def quotedBasePath = Pattern.quote("${this.basePath}")
       def relativeToBase = "${it}".replaceFirst("^${quotedBasePath}" , "")
       def relativePath = relativeToBase.split(Pattern.quote(File.separator)).toList()
 
@@ -144,7 +144,7 @@ abstract class Package {
     def fileList = []
     this.baseDir.eachFileRecurse FILES, {
       if (it.name == fileName) { 
-        e.echo("Found ./${fileToRelativePath(it)}")
+        e.echo("Found ${fileToRelativePath(it)}")
         fileList << it 
       }
     }
