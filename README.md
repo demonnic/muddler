@@ -87,7 +87,7 @@ I build using JDK8, but I have tested using jdk 8, 11, 17, and 18.
 
 `./gradlew clean shadowJar` produces an executable jar file with all of the depenendencies. This can be run using `java -jar </path/to/jarfile`
 
-Alternately, `./gradlews clean dockerTest` will create the demonnic/muddler:test docker image locally for you to use in testing.
+Alternately, `./gradlew clean dockerTest` will create the demonnic/muddler:test docker image locally for you to use in testing.
 
 ### Pull Requests
 
