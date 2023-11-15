@@ -2,5 +2,9 @@
   {
     "name": "demo",
     "keys": "ctl+clear+alt+shift+keypad"
+  },
+  {
+    "name": "demo2",
+    "keys": "ctl+shift+space"
   }
 ]
