@@ -263,6 +263,7 @@ def generateModifierCode(ArrayList modifiers) {
       '^': '94',
       '_': '95',
       '`': '96',
+      '|': '124',
       '~': '126'
     ]
     return keyCodes[key]
