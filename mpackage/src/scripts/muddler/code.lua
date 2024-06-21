@@ -44,7 +44,7 @@ function Muddler:stop()
   removeFileWatch(self.path .. "/.output")
 end
 
-local function execute(item)
+local function execute(item,name)
   if not item then
     debugc("Attempted to execute nil or false, must be string or function")
   end
@@ -65,7 +65,7 @@ local function execute(item)
     debugc("Unable to execute item, need a function, got a " .. itype)
     return
   end
-  local worked, err = pcall(item)
+  local worked, err = pcall(item,name)
   if not worked then
     debugc("Error executing item: " .. tostring(err))
   end
@@ -87,20 +87,20 @@ function Muddler:reload()
   debugc("preremove " .. name)
   if prer then
     debugc(f"  Firing preremove for pkg: {name}")
-    execute(prer)
-    debugc(f"  END premove for pkg: {name}")
+    execute(prer,name)
+    debugc(f"  END preremove for pkg: {name}")
   end
   uninstallPackage(name)
   debugc("postremove " .. name)
   if postr then
     debugc(f"  Firing postremove for pkg: {name}")
-    execute(postr)
-    debugc(f"  END postmove for pkg: {name}")
+    execute(postr,name)
+    debugc(f"  END postremove for pkg: {name}")
   end
   debugc("preinstall " .. name)
   if prei then
     debugc(f"  Firing preinstall for pkg: {name}")
-    execute(prei)
+    execute(prei,name)
     debugc(f"  END preinstall for pkg: {name}")
   end
   local succ = installPackage(path)
@@ -111,7 +111,7 @@ function Muddler:reload()
   debugc("postinstall " .. name)
   if posti then
     debugc(f"  Firing postinstall for pkg: {name}")
-    execute(posti)
+    execute(posti,name)
     debugc(f"  END postinstall for pkg: {name}")
   end
   debugc("Done reloading pkg " .. name)
