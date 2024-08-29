@@ -27,7 +27,7 @@ First, if you need help come find me on my discord: <https://discord.gg/SRRBpbxe
 It is probably the fastest way to get ahold of me and get a resolution to your issue.
 Second, starting with muddler 0.13 you can now use the `--generate` switch to interactively create a file tree, or `--default` to create a full, default file tree to start with. You should still familiarize yourself with the following information though.
 
-If you aren't starting from scratch and have an existing Mudlet package you'd like to convert, have a look at [DeMuddler](https://github.com/Edru2/DeMuddler).
+If you aren't starting from scratch and have an existing Mudlet package you'd like to convert, have a look at [DeMuddler](https://github.com/Edru2/DeMuddler), optionally using [this guide](https://mud.gesslar.dev/muddler.html).
 
 muddler largely relies upon adherence to the muddler convention. For instance, the filetree for animated timers looks like this:
 
