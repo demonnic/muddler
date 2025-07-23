@@ -21,9 +21,11 @@ function Muddler:start()
   self:stop()
   self.watch = true
   self.eventHandler = registerAnonymousEventHandler("sysPathChanged", function(_, path)
-    if path == self.path .. "/.output" then
-      self:reload()
-    end
+    tempTimer(0.5, function()
+      if path == self.path .. "/.output" then
+        self:reload()
+      end
+    end)
   end)
   addFileWatch(self.path .. "/.output")
 end
@@ -71,6 +73,10 @@ local function execute(item)
   end
 end
 
+function isPackageInstalled(name)
+  return table.contains(getPackages(), name)
+end
+
 function Muddler:reload()
   local ok, pkgInfo = pcall(jsonload, self.path .. "/.output")
   if not ok then
@@ -84,19 +90,28 @@ function Muddler:reload()
   local path = self.path .. pkgInfo.path
   path = path:gsub([[\]], "/")
   local prer, postr, prei, posti = self.preremove, self.postremove, self.preinstall, self.postinstall
-  debugc("preremove " .. name)
-  if prer then
-    debugc(f"  Firing preremove for pkg: {name}")
-    execute(prer)
-    debugc(f"  END premove for pkg: {name}")
+
+  if isPackageInstalled(name) then
+    debugc("preremove " .. name)
+    if prer then
+      debugc(f"  Firing preremove for pkg: {name}")
+      execute(prer)
+      debugc(f"  END premove for pkg: {name}")
+    end
+    uninstallPackage(name)
+    debugc("postremove " .. name)
+    if postr then
+      debugc(f"  Firing postremove for pkg: {name}")
+      execute(postr)
+      debugc(f"  END postmove for pkg: {name}")
+    end
   end
-  uninstallPackage(name)
-  debugc("postremove " .. name)
-  if postr then
-    debugc(f"  Firing postremove for pkg: {name}")
-    execute(postr)
-    debugc(f"  END postmove for pkg: {name}")
+
+  if isPackageInstalled(name) then
+    debugc("Could not uninstall package " .. name)
+    return
   end
+
   debugc("preinstall " .. name)
   if prei then
     debugc(f"  Firing preinstall for pkg: {name}")
@@ -104,7 +119,7 @@ function Muddler:reload()
     debugc(f"  END preinstall for pkg: {name}")
   end
   local succ = installPackage(path)
-  if not succ then
+  if not succ and not isPackageInstalled(name) then
     debugc("Could not install package at " .. path)
     return
   end
