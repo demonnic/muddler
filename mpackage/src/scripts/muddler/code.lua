@@ -25,6 +25,7 @@ function Muddler:start()
       self:reload()
     end
   end)
+  io.open(self.path .. "/.output","a"):close()
   addFileWatch(self.path .. "/.output")
 end
 
