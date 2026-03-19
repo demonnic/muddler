@@ -261,17 +261,21 @@ class App {
   static void watch() {
     def e = new Echo()
     def srcDir = new File('./src')
+    def mfile = new File('./mfile')
     if (!srcDir.exists()) {
       println 'muddler requires a src directory to read your package contents from, and cannot find it. Please see'
       return
     }
 
     def previousFileModificationTimes = mapFileModificationTimes(srcDir)
+    // include mfile to detect creation/deletion/changes to mfile
+    previousFileModificationTimes[mfile.path] = mfile.exists() ? mfile.lastModified() : -1L
 
     while (true) {
       Thread.sleep(1000)
 
       def currentFileModificationTimes = mapFileModificationTimes(srcDir)
+      currentFileModificationTimes[mfile.path] = mfile.exists() ? mfile.lastModified() : -1L
 
       if (currentFileModificationTimes != previousFileModificationTimes) {
         e.echo('Change detected in source directory')
