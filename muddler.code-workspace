@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"type": "gradle",
+				"id": "build shadowJar",
+				"script": "shadowJar",
+				"description": "Create a combined JAR of project and runtime dependencies",
+				"group": "shadow",
+				"project": "muddle",
+				"buildFile": "${workspaceFolder}/build.gradle",
+				"rootProject": "muddle",
+				"projectFolder": "${workspaceFolder}",
+				"workspaceFolder": "${workspaceFolder}",
+				"args": "",
+				"javaDebug": false,
+				"problemMatcher": [
+					"$gradle"
+				],
+				"label": "gradle: shadowJar"
+			}
+		]
+	}
+}

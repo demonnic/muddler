@@ -20,6 +20,7 @@ abstract class Package {
     e.echo("Scanning for $packageType")
     this.basePath = "build${File.separator}filtered${File.separator}src${File.separator}$packageType${File.separator}"
     this.baseDir = new File(this.basePath)
+    // Child items for the XML package
     this.children = []
     if (baseDir.exists()) {
       this.files = this.findFiles()
@@ -42,13 +43,14 @@ abstract class Package {
   }
   def createItems() {
     def fullItemsAsArrays = []
+    // For each file in the base directory (scripts, aliases, triggers, etc.)
     this.files.each {
       // We don't want to include build/filtered/src/ in the path, so remove
       // the basePath prefix from each filename
       def quotedBasePath = Pattern.quote("${this.basePath}")
       def relativeToBase = "${it}".replaceFirst("^${quotedBasePath}" , "")
       def relativePath = relativeToBase.split(Pattern.quote(File.separator)).toList()
-
+      // e.g. defenses/class/akkari becomes ["defenses", "class", "akkari"]
       def directoriesInPath = relativePath[0..<-1]
       def filePath =  directoriesInPath.join(File.separator)
       def fileName = relativePath.join(File.separator)
@@ -81,6 +83,7 @@ abstract class Package {
         fullItemsAsArrays.add(itemArray)
       }
     }
+    // Pops the the last item (i.e. the actual item rather than folder) and adds it to the list of XML children
     fullItemsAsArrays.each {
       def testData = it
       def currentData = testData.removeLast()
@@ -92,6 +95,7 @@ abstract class Package {
   def listToItems(theList, currentData) {
     def newItem = theList.removeLast()
     newItem.children.addAll currentData
+    promoteMatchingChild(newItem)
     if (theList.size() == 0) {
       return newItem
     } else {
@@ -124,16 +128,23 @@ abstract class Package {
 
   def fullMerge(ArrayList toMerge) {
     def mergedList = mergeDown(toMerge)
-    mergedList.collect {
+    mergedList.each {
       if (it.children.size() > 1) {
-        def newItems = fullMerge(it.children)
-        it.children = newItems
-        return it
-      } else {
-        return it
+        it.children = fullMerge(it.children)
       }
+      promoteMatchingChild(it)
     }
     return mergedList
+  }
+
+  def promoteMatchingChild(item) {
+    if (item.isFolder == "yes" && item.script=="") {
+      def matchingChild = item.children.find { it.name == item.name }
+      if (matchingChild) {
+        item.script = matchingChild.script
+        item.children.remove(matchingChild)
+      }
+    }
   }
 
   def fileToRelativePath(file) {
