@@ -138,10 +138,18 @@ abstract class Package {
   }
 
   def promoteMatchingChild(item) {
-    if (item.isFolder == "yes" && item.script=="") {
+    if (truthiness(item.isFolder) == "yes") {
       def matchingChild = item.children.find { it.name == item.name }
       if (matchingChild) {
-        item.script = matchingChild.script
+          e.echo("Promoting child '${matchingChild.name}' properties to folder '${item.name}'")
+          def preserved = ["isFolder", "children","isActive", "class", "e"]
+          matchingChild.properties.each { key, value ->
+            if (!preserved.contains(key)) {
+              item[key] = value
+            }
+          }
+        // Always drop the redundant leaf child
+        e.echo("Removing promoted child '${matchingChild.name}' from folder '${item.name}'")
         item.children.remove(matchingChild)
       }
     }
@@ -162,4 +170,11 @@ abstract class Package {
     return fileList
   }
 
+  def truthiness(thing) {
+    if (thing?.toBoolean() || thing == "yes") {
+      return "yes"
+    } else {
+      return "no"
+    }
+  }
 }
