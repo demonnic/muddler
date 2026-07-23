@@ -1,0 +1,12 @@
+[
+  {
+    "name": "gathered item",
+    "isActive": "yes",
+    "patterns": [
+      {
+        "pattern": "You gathered .+!",
+        "type": "regex"
+      }
+    ]
+  }
+]

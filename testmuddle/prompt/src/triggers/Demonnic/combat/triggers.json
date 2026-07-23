@@ -1,0 +1,11 @@
+[
+  {
+    "name": "combat",
+    "patterns": [
+      {
+        "pattern": "You lose \\d+ health!",
+        "type": "regex"
+      }
+    ]
+  }
+]

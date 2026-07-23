@@ -54,5 +54,13 @@
         ]
       }
     ]
+  },
+  {
+    "name": "combat",
+    "isFolder": "yes"
+  },
+  {
+    "name": "utilities",
+    "isFolder": "yes"
   }
 ]

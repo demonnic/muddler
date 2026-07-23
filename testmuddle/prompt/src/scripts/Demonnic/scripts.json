@@ -1,0 +1,17 @@
+[
+  {
+    "name": "pc init",
+    "isActive": "yes",
+    "script": "pc = { }"
+  },
+  {
+    "name": "combat",
+    "isActive": "yes",
+    "isFolder": "yes"
+  },
+  {
+    "name": "utilities",
+    "isActive": "yes",
+    "isFolder": "yes"
+  }
+]

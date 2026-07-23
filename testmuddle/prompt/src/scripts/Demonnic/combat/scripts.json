@@ -1,0 +1,14 @@
+[
+  {
+    "name": "combat",
+    "isActive": "yes"
+  },
+  {
+    "name": "magic",
+    "isActive": "yes"
+  },
+  {
+    "name": "melee",
+    "isActive": "yes"
+  }
+]
