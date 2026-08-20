@@ -143,11 +143,29 @@ abstract class Package {
   def findFiles(fileName) {
     def fileList = []
     this.baseDir.eachFileRecurse FILES, {
-      if (it.name == fileName) { 
-        e.echo("Found ${fileToRelativePath(it)}")
-        fileList << it 
+      if (it.name == fileName) {
+        fileList << it
       }
     }
+    // Shallowest first, so a directory's own json is always read before those
+    // of its subdirectories. createItems() adds items in the order it reads
+    // them and mergeDown() keeps the position of the first occurrence, so a
+    // group declared in its parent's json only holds its declared position if
+    // that json was read first. Left in filesystem order, a subdirectory read
+    // earlier would place the group by name instead, silently reordering
+    // siblings.
+    //
+    // Ties are broken by path so the result does not depend on the filesystem.
+    // eachFileRecurse returns directory entries in whatever order the platform
+    // gives: alphabetical on NTFS, effectively arbitrary on ext4. A group that
+    // no parent json declares takes its position from read order, so without a
+    // total order here the same sources build a differently ordered package on
+    // a different machine.
+    fileList = fileList.sort { a, b ->
+      def depth = { "${it}".split(Pattern.quote(File.separator)).size() }
+      depth(a) <=> depth(b) ?: "${a}" <=> "${b}"
+    }
+    fileList.each { e.echo("Found ${fileToRelativePath(it)}") }
     return fileList
   }
 
