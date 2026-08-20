@@ -73,8 +73,15 @@ class Trigger extends Item {
       if (patternTypeNumber == '6') { // 6 is the number for color trigger. 
         this.isColorTrigger = "yes"
         def colorArray = pattern.pattern.split(",")
+        if (colorArray.size() < 2) {
+          // Previously this threw ArrayIndexOutOfBoundsException with a bare
+          // stack trace, naming neither the trigger nor the offending pattern.
+          e.error("Colour pattern for trigger '${this.name}' must be \"<fg>,<bg>\" " +
+                  "(ANSI numbers, or IGNORE), but was '${pattern.pattern}'.",
+                  new IllegalArgumentException("bad colour pattern: ${pattern.pattern}"))
+        }
         def fg = colorArray[0]
-        def bg = colorArray[1]
+        def bg = colorArray.size() > 1 ? colorArray[1] : "IGNORE"
         this.isColorTriggerBg = "yes"
         this.isColorTriggerFg = "yes"
         if (fg == "IGNORE") { this.isColorTriggerFg = "no" }
