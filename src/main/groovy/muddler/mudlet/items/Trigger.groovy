@@ -42,10 +42,11 @@ class Trigger extends Item {
     this.mCommand = options.command ?: ""
     this.triggerType = 0
     this.isMultiline = super.truthiness(options.multiline)
-    this.conditonLineDelta = "0"
-    if (this.isMultiline == "yes") {
-      this.conditonLineDelta = options.multilineDelta ?: this.conditonLineDelta
-    }
+    // Mudlet uses conditonLineDelta as the line window for chained triggers,
+    // which applies whether or not the trigger is multiline. Previously this
+    // was only honoured when multiline was "yes", silently resetting the delta
+    // to 0 for every other trigger.
+    this.conditonLineDelta = options.multilineDelta ?: "0"
     this.isPerlSlashGOption = super.truthiness(options.matchall)
     this.isFilterTrigger = super.truthiness(options.filter)
     this.mStayOpen = options.fireLength ?: "0"
