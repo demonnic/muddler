@@ -156,6 +156,7 @@ class App {
     def timerP = new TimerPackage()
     def triggerP = new TriggerPackage()
     def keyP = new KeyPackage()
+    def actionP = new ActionPackage()
     def builder = new StreamingMarkupBuilder()
     builder.encoding = 'UTF-8'
     e.echo("Converting scanned data to Mudlet package XML now")
@@ -168,6 +169,7 @@ class App {
         mkp.yieldUnescaped timerP.toXML()
         mkp.yieldUnescaped triggerP.toXML()
         mkp.yieldUnescaped keyP.toXML()
+        mkp.yieldUnescaped actionP.toXML()
       }
     }
     def mpXML = XmlUtil.serialize(mudletPackage)
