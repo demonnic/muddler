@@ -5,9 +5,14 @@ import muddler.Echo
 
 abstract class Item {
   def e
+  // True when this item was synthesised from a directory name rather than
+  // declared in a json file. Synthesised folders carry only defaults, so a
+  // real declaration for the same folder must win when the two are merged.
+  boolean synthetic = false
 
   def Item(Map options) {
     this.e = new Echo()
+    this.synthetic = options.synthetic ?: false
     this.name = options.name
     if (options.isActive == null) {
       this.isActive = "yes"

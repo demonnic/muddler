@@ -74,6 +74,10 @@ abstract class Package {
           properties.isFolder = "yes"
           properties.name = it
           properties.path = filePath
+          // Placeholder built from a directory name -- it has default
+          // attributes only. Flagged so that a real declaration of the same
+          // folder (from the parent json) wins during the merge below.
+          properties.synthetic = true
           itemArray.add(newItem(properties))
         }
 
@@ -106,7 +110,15 @@ abstract class Package {
       def objectToMergeInto = mergeFrom.removeAt(0)
       def mergedList = mergeFrom.collect {
         if (it.name == objectToMergeInto.name) {
-          objectToMergeInto.children = objectToMergeInto.children + it.children
+          if (objectToMergeInto.synthetic && !it.synthetic) {
+            // The item we started with is only a directory placeholder while
+            // this one was actually declared. Keep the declared item (and its
+            // attributes such as isActive/script), but preserve child order.
+            it.children = objectToMergeInto.children + it.children
+            objectToMergeInto = it
+          } else {
+            objectToMergeInto.children = objectToMergeInto.children + it.children
+          }
           return
         } else {
           return it

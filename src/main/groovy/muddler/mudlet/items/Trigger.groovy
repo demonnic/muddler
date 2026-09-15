@@ -42,10 +42,11 @@ class Trigger extends Item {
     this.mCommand = options.command ?: ""
     this.triggerType = 0
     this.isMultiline = super.truthiness(options.multiline)
-    this.conditonLineDelta = "0"
-    if (this.isMultiline == "yes") {
-      this.conditonLineDelta = options.multilineDelta ?: this.conditonLineDelta
-    }
+    // Mudlet uses conditonLineDelta as the line window for chained triggers,
+    // which applies whether or not the trigger is multiline. Previously this
+    // was only honoured when multiline was "yes", silently resetting the delta
+    // to 0 for every other trigger.
+    this.conditonLineDelta = options.multilineDelta ?: "0"
     this.isPerlSlashGOption = super.truthiness(options.matchall)
     this.isFilterTrigger = super.truthiness(options.filter)
     this.mStayOpen = options.fireLength ?: "0"
@@ -72,8 +73,15 @@ class Trigger extends Item {
       if (patternTypeNumber == '6') { // 6 is the number for color trigger. 
         this.isColorTrigger = "yes"
         def colorArray = pattern.pattern.split(",")
+        if (colorArray.size() < 2) {
+          // Previously this threw ArrayIndexOutOfBoundsException with a bare
+          // stack trace, naming neither the trigger nor the offending pattern.
+          e.error("Colour pattern for trigger '${this.name}' must be \"<fg>,<bg>\" " +
+                  "(ANSI numbers, or IGNORE), but was '${pattern.pattern}'.",
+                  new IllegalArgumentException("bad colour pattern: ${pattern.pattern}"))
+        }
         def fg = colorArray[0]
-        def bg = colorArray[1]
+        def bg = colorArray.size() > 1 ? colorArray[1] : "IGNORE"
         this.isColorTriggerBg = "yes"
         this.isColorTriggerFg = "yes"
         if (fg == "IGNORE") { this.isColorTriggerFg = "no" }

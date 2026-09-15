@@ -23,6 +23,11 @@ class Key extends Item {
     super.readScripts('keys')
     this.command = options.command ?: ''
     extractKeyAndModifierCodes(options.keys ?: '')
+    // Allow raw Qt codes to be given directly. Packages imported from existing
+    // Mudlet XML carry keyCode/keyModifier numbers rather than a "ctrl+F1"
+    // style string, and there is otherwise no way to express them.
+    if (options.keyCode != null) { this.keyCode = "${options.keyCode}" }
+    if (options.keyModifier != null) { this.keyModifier = "${options.keyModifier}" }
     if (this.isFolder == "yes") {
       this.keyCode = this.keyCode ?: "33554431" // copied from a freshly made key group in mudlet 4.12
       this.keyModifier = this.keyModifier ?: "0" // ^this
