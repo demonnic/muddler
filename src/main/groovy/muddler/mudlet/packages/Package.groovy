@@ -109,7 +109,12 @@ abstract class Package {
     } else {
       def objectToMergeInto = mergeFrom.removeAt(0)
       def mergedList = mergeFrom.collect {
-        if (it.name == objectToMergeInto.name) {
+        // Mudlet allows siblings to share a name, so a name match alone is not
+        // grounds to merge. Only a folder placeholder built from a directory
+        // name is the same item as a folder of that name; two declared items
+        // are distinct, and merging them would silently drop one.
+        if (it.name == objectToMergeInto.name && it.isFolder == "yes" &&
+            objectToMergeInto.isFolder == "yes" && (it.synthetic || objectToMergeInto.synthetic)) {
           if (objectToMergeInto.synthetic && !it.synthetic) {
             // The item we started with is only a directory placeholder while
             // this one was actually declared. Keep the declared item (and its
