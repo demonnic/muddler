@@ -230,7 +230,10 @@ class App {
       e.echo("Copying icon file into place from src${File.separator}resources${File.separator}$packageIcon to .mudlet${File.separator}Icon${File.separator}$packageIcon")
       def iconDir = new File(tmp, '.mudlet/Icon')
       iconDir.mkdirs()
-      ant.copy(file: "build/tmp/$packageIcon", tofile: "build/tmp/.mudlet/Icon/$packageIcon")
+      // Mudlet keeps the icon only under .mudlet/Icon, so move it out of the
+      // package root (where the resources copy above put it) rather than
+      // shipping it twice.
+      ant.move(file: "build/tmp/$packageIcon", tofile: "build/tmp/.mudlet/Icon/$packageIcon")
     }
 
     ant.copy(toDir: 'build/tmp') {
